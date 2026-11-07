@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAR COTIZA | Premium</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#080808;
+ color:#f5f5f5;
+ font-family:Arial,sans-serif;
+}
+header{
+ padding:25px 15px;
+ text-align:center;
+ border-bottom:1px solid #b9944b;
+}
+.logo{font-size:29px;letter-spacing:4px;color:#d5b36a}
+header p{color:#aaa;font-size:11px;letter-spacing:3px}
+main{max-width:650px;margin:auto;padding:20px}
+.card{
+ background:#151515;
+ border:1px solid #383027;
+ border-radius:14px;
+ padding:20px;
+ margin-bottom:18px;
+}
+h2{color:#d5b36a;font-size:19px}
+input,select,textarea{
+ width:100%;
+ padding:13px;
+ margin:7px 0 14px;
+ border-radius:7px;
+ border:1px solid #444;
+ background:#090909;
+ color:white;
+ font-size:15px;
+}
+button{
+ width:100%;
+ padding:14px;
+ background:linear-gradient(120deg,#a47b35,#e6ca83);
+ border:0;
+ border-radius:8px;
+ color:#111;
+ font-weight:bold;
+ margin-top:8px;
+ cursor:pointer;
+}
+.secondary{background:#292929;color:#e6ca83}
+.result{
+ font-size:27px;
+ color:#e6ca83;
+ text-align:center;
+ padding:15px;
+}
+.small{font-size:12px;color:#aaa}
+.hidden{display:none}
+nav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:15px}
+nav button{width:auto;flex:1;font-size:12px}
+.quote{
+ border-bottom:1px solid #444;
+ padding:12px 0;
+}
+#message{color:#e6ca83;text-align:center}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">🍸 BAR COTIZA</div>
+ <p>PREMIUM BARTENDER EXPERIENCE</p>
+</header>
+
+<main>
+
+<section id="auth" class="card">
+ <h2>Bienvenido</h2>
+ <p class="small">Ingresa a tu cuenta para administrar tu negocio.</p>
+
+ <input id="email" type="email" placeholder="Correo electrónico">
+ <input id="password" type="password" placeholder="Contraseña">
+
+ <button onclick="login()">INICIAR SESIÓN</button>
+ <button class="secondary" onclick="register()">CREAR CUENTA</button>
+ <p id="message"></p>
+</section>
+
+<section id="app" class="hidden">
+
+ <nav>
+  <button onclick="show('calculator')">Cotizador</button>
+  <button onclick="show('history')">Historial</button>
+  <button onclick="show('business')">Negocio</button>
+  <button onclick="logout()">Salir</button>
+ </nav>
+
+ <section id="calculator" class="card">
+  <h2>Nuevo presupuesto</h2>
+
+  <label>Nombre del cliente</label>
+  <input id="client" placeholder="Nombre del cliente">
+
+  <label>Tipo de evento</label>
+  <select id="event">
+   <option>Matrimonio</option>
+   <option>Cumpleaños</option>
+   <option>Evento corporativo</option>
+   <option>Fiesta privada</option>
+   <option>Otro evento</option>
+  </select>
+
+  <label>Fecha del evento</label>
+  <input type="date" id="date">
+
+  <label>Cantidad de invitados</label>
+  <input type="number" id="guests" value="50" min="1">
+
+  <label>Paquete</label>
+  <select id="package">
+   <option value="Basico">Básico</option>
+   <option value="Premium">Premium</option>
+   <option value="Personalizado">Personalizado</option>
+  </select>
+
+  <label>Precio por persona (S/)</label>
+  <input type="number" id="price" value="15" min="0" step="0.50">
+
+  <label>Servicios adicionales (S/)</label>
+  <input type="number" id="extras" value="0" min="0" step="0.50">
+
+  <label>Descuento (S/)</label>
+  <input type="number" id="discount" value="0" min="0" step="0.50">
+
+  <label>Detalles del servicio</label>
+  <textarea id="details" placeholder="Descripción del evento..."></textarea>
+
+  <button onclick="calculate()">CALCULAR PRESUPUESTO</button>
+
+  <div class="result" id="total">S/ 0.00</div>
+
+  <button onclick="saveQuote()">GUARDAR COTIZACIÓN</button>
+  <button class="secondary" onclick="shareQuote()">COMPARTIR POR WHATSAPP</button>
+ </section>
+
+ <section id="history" class="card hidden">
+  <h2>Historial de cotizaciones</h2>
+  <div id="quotes"></div>
+ </section>
+
+ <section id="business" class="card hidden">
+  <h2>Mi negocio</h2>
+
+  <label>Nombre comercial</label>
+  <input id="businessName" placeholder="Nombre de tu empresa">
+
+  <label>Teléfono</label>
+  <input id="businessPhone" placeholder="Número de contacto">
+
+  <label>Ciudad</label>
+  <input id="businessCity" placeholder="Ciudad">
+
+  <button onclick="saveBusiness()">GUARDAR DATOS</button>
+  <p class="small">Panel de configuración de tu negocio.</p>
+ </section>
+
+</section>
+</main>
+
+<script>
+const SUPABASE_URL = 'https://dcdoammfprpjwgmorrhj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Bm-RcnRaN3nMHVLHJUxdJA_TFmVPvPj';
+
+const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let user = null;
+let total = 0;
+
+function message(t){
+ document.getElementById('message').textContent=t;
+}
+
+async function login(){
+ const {data,error}=await db.auth.signInWithPassword({
+  email:email.value.trim(),
+  password:password.value
+ });
+ if(error)return message(error.message);
+ user=data.user;
+ await start();
+}
+
+async function register(){
+ const {data,error}=await db.auth.signUp({
+  email:email.value.trim(),
+  password:password.value
+ });
+ if(error)return message(error.message);
+ message('Registro realizado. Revisa tu correo si necesitas confirmar tu cuenta.');
+ if(data.session){
+  user=data.user;
+  await start();
+ }
+}
+
+async function start(){
+ document.getElementById('auth').classList.add('hidden');
+ document.getElementById('app').classList.remove('hidden');
+ await loadBusiness();
+ await loadQuotes();
+}
+
+async function logout(){
+ await db.auth.signOut();
+ location.reload();
+}
+
+function show(section){
+ ['calculator','history','business'].forEach(id=>{
+  document.getElementById(id).classList.toggle('hidden',id!==section);
+ });
+ if(section==='history')loadQuotes();
+}
+
+function calculate(){
+ const guests=Number(document.getElementById('guests').value);
+ const price=Number(document.getElementById('price').value);
+ const extras=Number(document.getElementById('extras').value);
+ const discount=Number(document.getElementById('discount').value);
+
+ if(guests<1||price<0||extras<0||discount<0){
+  alert('Revisa los valores ingresados');
+  return;
+ }
+
+ total=Math.max(0,guests*price+extras-discount);
+ document.getElementById('total').textContent='S/ '+total.toFixed(2);
+}
+
+async function saveQuote(){
+ if(!user)return;
+
+ calculate();
+
+ const guests=Number(document.getElementById('guests').value);
+ const price=Number(document.getElementById('price').value);
+
+ const {data:business,error:bError}=await db
+  .from('businesses')
+  .select('id')
+  .eq('owner_id',user.id)
+  .maybeSingle();
+
+ if(bError){alert(bError.message);return;}
+
+ const quote={
+  user_id:user.id,
+  business_id:business?.id||null,
+  client_name:document.getElementById('client').value,
+  event_type:document.getElementById('event').value,
+  event_date:document.getElementById('date').value||null,
+  guests:guests,
+  price_per_person:price,
+  package_name:document.getElementById('package').value,
+  extras:Number(document.getElementById('extras').value),
+  discount:Number(document.getElementById('discount').value),
+  total:total,
+  details:document.getElementById('details').value
+ };
+
+ if(!quote.client_name.trim()){
+  alert('Ingresa el nombre del cliente');
+  return;
+ }
+
+ const {error}=await db.from('quotes').insert(quote);
+
+ if(error){alert('Error: '+error.message);return;}
+
+ alert('¡Cotización guardada correctamente!');
+ await loadQuotes();
+}
+
+async function loadQuotes(){
+ const {data,error}=await db
+  .from('quotes')
+  .select('*')
+  .eq('user_id',user.id)
+  .order('created_at',{ascending:false});
+
+ if(error){
+  document.getElementById('quotes').textContent=error.message;
+  return;
+ }
+
+ document.getElementById('quotes').innerHTML=(data||[]).map(q=>`
+  <div class="quote">
+   <strong>${escapeHTML(q.client_name||'Cliente')}</strong>
+   <p class="small">${escapeHTML(q.event_type||'')} · ${q.event_date||'Sin fecha'}</p>
+   <strong style="color:#e6ca83">S/ ${Number(q.total).toFixed(2)}</strong>
+  </div>
+ `).join('')||'<p class="small">Todavía no tienes cotizaciones.</p>';
+}
+
+async function saveBusiness(){
+ const name=document.getElementById('businessName').value.trim();
+ const phone=document.getElementById('businessPhone').value.trim();
+ const city=document.getElementById('businessCity').value.trim();
+
+ const {data:existing,error:readError}=await db
+  .from('businesses')
+  .select('id')
+  .eq('owner_id',user.id)
+  .maybeSingle();
+
+ if(readError){alert(readError.message);return;}
+
+ let result;
+
+ if(existing){
+  result=await db.from('businesses').update({
+   name,phone,city
+  }).eq('id',existing.id);
+ }else{
+  result=await db.from('businesses').insert({
+   owner_id:user.id,name,phone,city
+  });
+ }
+
+ if(result.error)alert(result.error.message);
+ else alert('Datos guardados correctamente');
+}
+
+async function loadBusiness(){
+ const {data,error}=await db
+  .from('businesses')
+  .select('*')
+  .eq('owner_id',user.id)
+  .maybeSingle();
+
+ if(error)return;
+
+ if(data){
+  document.getElementById('businessName').value=data.name||'';
+  document.getElementById('businessPhone').value=data.phone||'';
+  document.getElementById('businessCity').value=data.city||'';
+ }
+}
+
+function shareQuote(){
+ calculate();
+
+ const text=`BAR COTIZA - PRESUPUESTO
+Cliente: ${document.getElementById('client').value}
+Evento: ${document.getElementById('event').value}
+Invitados: ${document.getElementById('guests').value}
+Paquete: ${document.getElementById('package').value}
+Total: S/ ${total.toFixed(2)}`;
+
+ window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
+}
+
+function escapeHTML(value){
+ return String(value??'').replace(/[&<>"']/g,c=>({
+ '&':'&amp;','<':'&lt;','>':'&gt;',
+ '"':'&quot;',"'":'&#39;'
+ })[c]);
+}
+
+db.auth.getSession().then(({data})=>{
+ if(data.session){
+  user=data.session.user;
+  start();
+ }
+});
+</script>
+
+</body>
+</html>
