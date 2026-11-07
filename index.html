@@ -10,374 +10,420 @@
 <style>
 *{box-sizing:border-box}
 body{
- margin:0;
- background:#080808;
- color:#f5f5f5;
- font-family:Arial,sans-serif;
+margin:0;
+background:#0b0b0b;
+color:#fff;
+font-family:Arial,sans-serif;
 }
 header{
- padding:25px 15px;
- text-align:center;
- border-bottom:1px solid #b9944b;
+background:#111;
+padding:22px;
+text-align:center;
+border-bottom:1px solid #b99446;
 }
-.logo{font-size:29px;letter-spacing:4px;color:#d5b36a}
-header p{color:#aaa;font-size:11px;letter-spacing:3px}
-main{max-width:650px;margin:auto;padding:20px}
+.logo{
+color:#d8b568;
+font-size:29px;
+font-weight:bold;
+letter-spacing:4px;
+}
+.subtitle{color:#aaa;font-size:11px;letter-spacing:3px}
+.container{max-width:850px;margin:auto;padding:20px}
 .card{
- background:#151515;
- border:1px solid #383027;
- border-radius:14px;
- padding:20px;
- margin-bottom:18px;
+background:#151515;
+border:1px solid #333;
+border-radius:12px;
+padding:20px;
+margin-bottom:18px;
 }
-h2{color:#d5b36a;font-size:19px}
+h2{color:#d8b568;font-size:19px}
 input,select,textarea{
- width:100%;
- padding:13px;
- margin:7px 0 14px;
- border-radius:7px;
- border:1px solid #444;
- background:#090909;
- color:white;
- font-size:15px;
+width:100%;
+padding:13px;
+margin:7px 0 14px;
+background:#222;
+color:white;
+border:1px solid #444;
+border-radius:7px;
 }
 button{
- width:100%;
- padding:14px;
- background:linear-gradient(120deg,#a47b35,#e6ca83);
- border:0;
- border-radius:8px;
- color:#111;
- font-weight:bold;
- margin-top:8px;
- cursor:pointer;
+width:100%;
+padding:14px;
+background:#c5a052;
+color:#111;
+border:0;
+border-radius:7px;
+font-weight:bold;
+cursor:pointer;
+margin:5px 0;
 }
-.secondary{background:#292929;color:#e6ca83}
-.result{
- font-size:27px;
- color:#e6ca83;
- text-align:center;
- padding:15px;
-}
-.small{font-size:12px;color:#aaa}
-.hidden{display:none}
+button.secondary{background:#292929;color:#d8b568;border:1px solid #a88946}
+button.danger{background:#762d2d;color:white}
 nav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:15px}
-nav button{width:auto;flex:1;font-size:12px}
-.quote{
- border-bottom:1px solid #444;
- padding:12px 0;
-}
-#message{color:#e6ca83;text-align:center}
+nav button{flex:1;min-width:100px}
+.hidden{display:none!important}
+.gold{color:#d8b568}
+.total{font-size:30px;color:#d8b568;font-weight:bold}
+.small{font-size:12px;color:#aaa}
+.item{padding:12px;border-bottom:1px solid #333}
+#status{color:#d8b568;font-size:13px;text-align:center}
 </style>
 </head>
 
 <body>
 
 <header>
- <div class="logo">🍸 BAR COTIZA</div>
- <p>PREMIUM BARTENDER EXPERIENCE</p>
+<div class="logo">🍸 BAR COTIZA</div>
+<div class="subtitle">PROFESSIONAL BAR MANAGEMENT</div>
 </header>
 
-<main>
+<div class="container">
 
-<section id="auth" class="card">
- <h2>Bienvenido</h2>
- <p class="small">Ingresa a tu cuenta para administrar tu negocio.</p>
+<div id="login" class="card">
+<h2>Bienvenido a BAR COTIZA</h2>
+<p class="small">Ingresa a tu cuenta para continuar.</p>
 
- <input id="email" type="email" placeholder="Correo electrónico">
- <input id="password" type="password" placeholder="Contraseña">
+<input id="email" type="email" placeholder="Correo electrónico">
+<input id="password" type="password" placeholder="Contraseña">
 
- <button onclick="login()">INICIAR SESIÓN</button>
- <button class="secondary" onclick="register()">CREAR CUENTA</button>
- <p id="message"></p>
-</section>
+<button onclick="signIn()">INICIAR SESIÓN</button>
+<button class="secondary" onclick="signUp()">CREAR CUENTA</button>
+<p id="status"></p>
+</div>
 
-<section id="app" class="hidden">
+<div id="app" class="hidden">
 
- <nav>
-  <button onclick="show('calculator')">Cotizador</button>
-  <button onclick="show('history')">Historial</button>
-  <button onclick="show('business')">Negocio</button>
-  <button onclick="logout()">Salir</button>
- </nav>
+<nav>
+<button onclick="showTab('cotizador')">Cotizador</button>
+<button onclick="showTab('historial')">Historial</button>
+<button onclick="showTab('negocio')">Mi negocio</button>
+<button id="ownerButton" class="hidden" onclick="showTab('owner')">Propietario</button>
+<button class="secondary" onclick="logout()">Salir</button>
+</nav>
 
- <section id="calculator" class="card">
-  <h2>Nuevo presupuesto</h2>
+<section id="cotizador" class="card">
+<h2>Nueva cotización</h2>
 
-  <label>Nombre del cliente</label>
-  <input id="client" placeholder="Nombre del cliente">
+<input id="client" placeholder="Nombre del cliente">
 
-  <label>Tipo de evento</label>
-  <select id="event">
-   <option>Matrimonio</option>
-   <option>Cumpleaños</option>
-   <option>Evento corporativo</option>
-   <option>Fiesta privada</option>
-   <option>Otro evento</option>
-  </select>
+<select id="event">
+<option value="">Tipo de evento</option>
+<option>Matrimonio</option>
+<option>Cumpleaños</option>
+<option>Corporativo</option>
+<option>Graduación</option>
+<option>Evento privado</option>
+<option>Otro</option>
+</select>
 
-  <label>Fecha del evento</label>
-  <input type="date" id="date">
+<label class="small">Fecha del evento</label>
+<input id="date" type="date">
 
-  <label>Cantidad de invitados</label>
-  <input type="number" id="guests" value="50" min="1">
+<input id="guests" type="number" placeholder="Cantidad de invitados" min="1">
 
-  <label>Paquete</label>
-  <select id="package">
-   <option value="Basico">Básico</option>
-   <option value="Premium">Premium</option>
-   <option value="Personalizado">Personalizado</option>
-  </select>
+<h2>Paquete de barra</h2>
 
-  <label>Precio por persona (S/)</label>
-  <input type="number" id="price" value="15" min="0" step="0.50">
+<select id="package">
+<option value="Basico">Básico</option>
+<option value="Premium">Premium</option>
+<option value="Luxury">Luxury</option>
+<option value="Personalizado">Personalizado</option>
+</select>
 
-  <label>Servicios adicionales (S/)</label>
-  <input type="number" id="extras" value="0" min="0" step="0.50">
+<input id="price" type="number" placeholder="Precio por persona (S/)">
 
-  <label>Descuento (S/)</label>
-  <input type="number" id="discount" value="0" min="0" step="0.50">
+<input id="extras" type="number" placeholder="Servicios adicionales (S/)" value="0">
 
-  <label>Detalles del servicio</label>
-  <textarea id="details" placeholder="Descripción del evento..."></textarea>
+<input id="discount" type="number" placeholder="Descuento (S/)" value="0">
 
-  <button onclick="calculate()">CALCULAR PRESUPUESTO</button>
+<textarea id="details" placeholder="Detalles del servicio"></textarea>
 
-  <div class="result" id="total">S/ 0.00</div>
+<button onclick="calculate()">CALCULAR COTIZACIÓN</button>
 
-  <button onclick="saveQuote()">GUARDAR COTIZACIÓN</button>
-  <button class="secondary" onclick="shareQuote()">COMPARTIR POR WHATSAPP</button>
- </section>
+<div class="card">
+<p class="small">TOTAL DE LA COTIZACIÓN</p>
+<div class="total" id="total">S/ 0.00</div>
+<p class="small" id="summary"></p>
+</div>
 
- <section id="history" class="card hidden">
-  <h2>Historial de cotizaciones</h2>
-  <div id="quotes"></div>
- </section>
-
- <section id="business" class="card hidden">
-  <h2>Mi negocio</h2>
-
-  <label>Nombre comercial</label>
-  <input id="businessName" placeholder="Nombre de tu empresa">
-
-  <label>Teléfono</label>
-  <input id="businessPhone" placeholder="Número de contacto">
-
-  <label>Ciudad</label>
-  <input id="businessCity" placeholder="Ciudad">
-
-  <button onclick="saveBusiness()">GUARDAR DATOS</button>
-  <p class="small">Panel de configuración de tu negocio.</p>
- </section>
+<button onclick="saveQuote()">GUARDAR COTIZACIÓN</button>
+<button class="secondary" onclick="shareWhatsApp()">ENVIAR POR WHATSAPP</button>
 
 </section>
-</main>
+
+<section id="historial" class="card hidden">
+<h2>Historial de cotizaciones</h2>
+<div id="historyList"></div>
+</section>
+
+<section id="negocio" class="card hidden">
+<h2>Mi negocio</h2>
+<input id="businessName" placeholder="Nombre de tu empresa">
+<input id="businessPhone" placeholder="Teléfono / WhatsApp">
+<input id="businessCity" placeholder="Ciudad">
+<button onclick="saveBusiness()">GUARDAR NEGOCIO</button>
+</section>
+
+<section id="owner" class="card hidden">
+<h2>Panel del propietario</h2>
+<p class="small">Administración general de BAR COTIZA.</p>
+
+<div class="card">
+<h2>Usuarios registrados</h2>
+<div id="usersCount" class="total">0</div>
+</div>
+
+<div class="card">
+<h2>Negocios registrados</h2>
+<div id="businessCount" class="total">0</div>
+</div>
+
+<div class="card">
+<h2>Cotizaciones generadas</h2>
+<div id="quotesCount" class="total">0</div>
+</div>
+
+<h2>Usuarios</h2>
+<div id="usersList"></div>
+
+<h2>Negocios</h2>
+<div id="businessList"></div>
+
+</section>
+
+</div>
+</div>
 
 <script>
-const SUPABASE_URL = 'https://dcdoammfprpjwgmorrhj.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_Bm-RcnRaN3nMHVLHJUxdJA_TFmVPvPj';
+const SUPABASE_URL =
+'https://dcdoammfprpjwgmorrhj.supabase.co';
 
-const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const SUPABASE_KEY =
+'sb_publishable_Bm-RcnRaN3nMHVLHJUxdJA_TFmVPvPj';
 
-let user = null;
-let total = 0;
+const db = window.supabase.createClient(
+SUPABASE_URL,SUPABASE_KEY
+);
+
+let user=null;
+let business=null;
+let currentTotal=0;
 
 function message(t){
- document.getElementById('message').textContent=t;
+document.getElementById('status').textContent=t;
 }
 
-async function login(){
- const {data,error}=await db.auth.signInWithPassword({
-  email:email.value.trim(),
-  password:password.value
- });
- if(error)return message(error.message);
- user=data.user;
- await start();
+async function signUp(){
+const email=document.getElementById('email').value.trim();
+const password=document.getElementById('password').value;
+
+if(!email||!password)return message('Completa tus datos.');
+
+const {error}=await db.auth.signUp({email,password});
+
+message(error?error.message:'Registro enviado. Revisa tu correo si se solicita confirmación.');
 }
 
-async function register(){
- const {data,error}=await db.auth.signUp({
-  email:email.value.trim(),
-  password:password.value
- });
- if(error)return message(error.message);
- message('Registro realizado. Revisa tu correo si necesitas confirmar tu cuenta.');
- if(data.session){
-  user=data.user;
-  await start();
- }
-}
+async function signIn(){
+const email=document.getElementById('email').value.trim();
+const password=document.getElementById('password').value;
 
-async function start(){
- document.getElementById('auth').classList.add('hidden');
- document.getElementById('app').classList.remove('hidden');
- await loadBusiness();
- await loadQuotes();
+const {data,error}=await db.auth.signInWithPassword({
+email,password
+});
+
+if(error)return message(error.message);
+
+user=data.user;
+await initialize();
 }
 
 async function logout(){
- await db.auth.signOut();
- location.reload();
+await db.auth.signOut();
+location.reload();
 }
 
-function show(section){
- ['calculator','history','business'].forEach(id=>{
-  document.getElementById(id).classList.toggle('hidden',id!==section);
- });
- if(section==='history')loadQuotes();
+async function initialize(){
+document.getElementById('login').classList.add('hidden');
+document.getElementById('app').classList.remove('hidden');
+
+const {data:profile}=await db.from('profiles')
+.select('*').eq('id',user.id).maybeSingle();
+
+if(profile?.role==='owner'){
+document.getElementById('ownerButton').classList.remove('hidden');
 }
 
-function calculate(){
- const guests=Number(document.getElementById('guests').value);
- const price=Number(document.getElementById('price').value);
- const extras=Number(document.getElementById('extras').value);
- const discount=Number(document.getElementById('discount').value);
+await loadBusiness();
+await loadHistory();
 
- if(guests<1||price<0||extras<0||discount<0){
-  alert('Revisa los valores ingresados');
-  return;
- }
-
- total=Math.max(0,guests*price+extras-discount);
- document.getElementById('total').textContent='S/ '+total.toFixed(2);
-}
-
-async function saveQuote(){
- if(!user)return;
-
- calculate();
-
- const guests=Number(document.getElementById('guests').value);
- const price=Number(document.getElementById('price').value);
-
- const {data:business,error:bError}=await db
-  .from('businesses')
-  .select('id')
-  .eq('owner_id',user.id)
-  .maybeSingle();
-
- if(bError){alert(bError.message);return;}
-
- const quote={
-  user_id:user.id,
-  business_id:business?.id||null,
-  client_name:document.getElementById('client').value,
-  event_type:document.getElementById('event').value,
-  event_date:document.getElementById('date').value||null,
-  guests:guests,
-  price_per_person:price,
-  package_name:document.getElementById('package').value,
-  extras:Number(document.getElementById('extras').value),
-  discount:Number(document.getElementById('discount').value),
-  total:total,
-  details:document.getElementById('details').value
- };
-
- if(!quote.client_name.trim()){
-  alert('Ingresa el nombre del cliente');
-  return;
- }
-
- const {error}=await db.from('quotes').insert(quote);
-
- if(error){alert('Error: '+error.message);return;}
-
- alert('¡Cotización guardada correctamente!');
- await loadQuotes();
-}
-
-async function loadQuotes(){
- const {data,error}=await db
-  .from('quotes')
-  .select('*')
-  .eq('user_id',user.id)
-  .order('created_at',{ascending:false});
-
- if(error){
-  document.getElementById('quotes').textContent=error.message;
-  return;
- }
-
- document.getElementById('quotes').innerHTML=(data||[]).map(q=>`
-  <div class="quote">
-   <strong>${escapeHTML(q.client_name||'Cliente')}</strong>
-   <p class="small">${escapeHTML(q.event_type||'')} · ${q.event_date||'Sin fecha'}</p>
-   <strong style="color:#e6ca83">S/ ${Number(q.total).toFixed(2)}</strong>
-  </div>
- `).join('')||'<p class="small">Todavía no tienes cotizaciones.</p>';
-}
-
-async function saveBusiness(){
- const name=document.getElementById('businessName').value.trim();
- const phone=document.getElementById('businessPhone').value.trim();
- const city=document.getElementById('businessCity').value.trim();
-
- const {data:existing,error:readError}=await db
-  .from('businesses')
-  .select('id')
-  .eq('owner_id',user.id)
-  .maybeSingle();
-
- if(readError){alert(readError.message);return;}
-
- let result;
-
- if(existing){
-  result=await db.from('businesses').update({
-   name,phone,city
-  }).eq('id',existing.id);
- }else{
-  result=await db.from('businesses').insert({
-   owner_id:user.id,name,phone,city
-  });
- }
-
- if(result.error)alert(result.error.message);
- else alert('Datos guardados correctamente');
+if(profile?.role==='owner')await loadOwner();
 }
 
 async function loadBusiness(){
- const {data,error}=await db
-  .from('businesses')
-  .select('*')
-  .eq('owner_id',user.id)
-  .maybeSingle();
+const {data}=await db.from('businesses')
+.select('*').eq('owner_id',user.id).maybeSingle();
 
- if(error)return;
+business=data;
 
- if(data){
-  document.getElementById('businessName').value=data.name||'';
-  document.getElementById('businessPhone').value=data.phone||'';
-  document.getElementById('businessCity').value=data.city||'';
- }
+if(data){
+document.getElementById('businessName').value=data.name||'';
+document.getElementById('businessPhone').value=data.phone||'';
+document.getElementById('businessCity').value=data.city||'';
+}
 }
 
-function shareQuote(){
- calculate();
+async function saveBusiness(){
+const record={
+owner_id:user.id,
+name:document.getElementById('businessName').value,
+phone:document.getElementById('businessPhone').value,
+city:document.getElementById('businessCity').value
+};
 
- const text=`BAR COTIZA - PRESUPUESTO
-Cliente: ${document.getElementById('client').value}
-Evento: ${document.getElementById('event').value}
-Invitados: ${document.getElementById('guests').value}
-Paquete: ${document.getElementById('package').value}
-Total: S/ ${total.toFixed(2)}`;
+let result;
 
- window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
+if(business){
+result=await db.from('businesses')
+.update(record).eq('id',business.id);
+}else{
+result=await db.from('businesses')
+.insert(record);
+}
+
+if(result.error)return alert(result.error.message);
+
+alert('Negocio guardado correctamente.');
+await loadBusiness();
+}
+
+function calculate(){
+const guests=Number(document.getElementById('guests').value);
+const price=Number(document.getElementById('price').value);
+const extras=Number(document.getElementById('extras').value)||0;
+const discount=Number(document.getElementById('discount').value)||0;
+
+if(!guests||!price)return alert('Ingresa invitados y precio.');
+
+currentTotal=Math.max(0,guests*price+extras-discount);
+
+document.getElementById('total').textContent=
+'S/ '+currentTotal.toFixed(2);
+
+document.getElementById('summary').textContent=
+guests+' invitados × S/ '+price.toFixed(2)+
+' + extras S/ '+extras.toFixed(2)+
+' - descuento S/ '+discount.toFixed(2);
+}
+
+async function saveQuote(){
+if(!user)return;
+
+if(!business)return alert('Primero registra tu negocio.');
+
+calculate();
+
+const record={
+user_id:user.id,
+business_id:business.id,
+client_name:document.getElementById('client').value,
+event_type:document.getElementById('event').value,
+event_date:document.getElementById('date').value||null,
+guests:Number(document.getElementById('guests').value),
+price_per_person:Number(document.getElementById('price').value),
+package_name:document.getElementById('package').value,
+extras:Number(document.getElementById('extras').value)||0,
+discount:Number(document.getElementById('discount').value)||0,
+total:currentTotal,
+details:document.getElementById('details').value
+};
+
+const {error}=await db.from('quotes').insert(record);
+
+if(error)return alert('No se pudo guardar: '+error.message);
+
+alert('¡Cotización guardada!');
+await loadHistory();
+}
+
+async function loadHistory(){
+const {data,error}=await db.from('quotes')
+.select('*').eq('user_id',user.id)
+.order('created_at',{ascending:false});
+
+if(error){
+document.getElementById('historyList').textContent=error.message;
+return;
+}
+
+document.getElementById('historyList').innerHTML=
+(data||[]).map(q=>`
+<div class="item">
+<strong>${escapeHTML(q.client_name||'Cliente')}</strong>
+<p class="small">${escapeHTML(q.event_type||'Evento')} · ${q.event_date||''}</p>
+<strong class="gold">S/ ${Number(q.total).toFixed(2)}</strong>
+</div>
+`).join('')||'Todavía no tienes cotizaciones.';
+}
+
+function shareWhatsApp(){
+const phone=(document.getElementById('businessPhone').value||'').replace(/\D/g,'');
+
+const text=
+'🍸 BAR COTIZA\n\n'+
+'Cliente: '+document.getElementById('client').value+'\n'+
+'Evento: '+document.getElementById('event').value+'\n'+
+'Fecha: '+document.getElementById('date').value+'\n'+
+'Invitados: '+document.getElementById('guests').value+'\n'+
+'Paquete: '+document.getElementById('package').value+'\n'+
+'Total: S/ '+currentTotal.toFixed(2)+'\n\n'+
+'Gracias por confiar en nosotros.';
+
+window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(text),'_blank');
+}
+
+async function loadOwner(){
+const [u,b,q]=await Promise.all([
+db.from('profiles').select('*'),
+db.from('businesses').select('*'),
+db.from('quotes').select('*')
+]);
+
+if(u.error||b.error||q.error){
+alert('No se pudieron cargar todos los datos del panel. Revisa las políticas de acceso.');
+return;
+}
+
+document.getElementById('usersCount').textContent=u.data.length;
+document.getElementById('businessCount').textContent=b.data.length;
+document.getElementById('quotesCount').textContent=q.data.length;
+
+document.getElementById('usersList').innerHTML=
+u.data.map(x=>`<div class="item">${escapeHTML(x.email||'')}</div>`).join('');
+
+document.getElementById('businessList').innerHTML=
+b.data.map(x=>`<div class="item">${escapeHTML(x.name||'')} · ${escapeHTML(x.city||'')}</div>`).join('');
 }
 
 function escapeHTML(value){
- return String(value??'').replace(/[&<>"']/g,c=>({
- '&':'&amp;','<':'&lt;','>':'&gt;',
- '"':'&quot;',"'":'&#39;'
- })[c]);
+return String(value).replace(/[&<>"']/g,c=>({
+'&':'&amp;','<':'&lt;','>':'&gt;',
+'"':'&quot;',"'":'&#39;'
+}[c]));
+}
+
+function showTab(id){
+['cotizador','historial','negocio','owner'].forEach(x=>{
+document.getElementById(x).classList.add('hidden');
+});
+document.getElementById(id).classList.remove('hidden');
 }
 
 db.auth.getSession().then(({data})=>{
- if(data.session){
-  user=data.session.user;
-  start();
- }
+if(data.session){
+user=data.session.user;
+initialize();
+}
 });
 </script>
 
