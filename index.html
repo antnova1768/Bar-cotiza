@@ -147,8 +147,14 @@ nav button{flex:1;min-width:100px}
 </div>
 
 <button onclick="saveQuote()">GUARDAR COTIZACIÓN</button>
-<button class="secondary" onclick="shareWhatsApp()">ENVIAR POR WHATSAPP</button>
 
+<button class="secondary" onclick="shareWhatsApp()">
+ENVIAR POR WHATSAPP
+</button>
+
+<button class="secondary" onclick="downloadQuotePDF()">
+📄 DESCARGAR COTIZACIÓN PDF
+</button>
 </section>
 
 <section id="historial" class="card hidden">
@@ -404,7 +410,59 @@ u.data.map(x=>`<div class="item">${escapeHTML(x.email||'')}</div>`).join('');
 document.getElementById('businessList').innerHTML=
 b.data.map(x=>`<div class="item">${escapeHTML(x.name||'')} · ${escapeHTML(x.city||'')}</div>`).join('');
 }
+function downloadQuotePDF(){
 
+const client=document.getElementById('client').value;
+const event=document.getElementById('event').value;
+const date=document.getElementById('date').value;
+const guests=document.getElementById('guests').value;
+const pack=document.getElementById('package').value;
+const total=currentTotal.toFixed(2);
+
+const pdf=window.open('','_blank');
+
+if(!pdf){
+alert('Permite las ventanas emergentes para descargar el PDF.');
+return;
+}
+
+pdf.document.write(`
+<html>
+<head>
+<title>Cotización BAR COTIZA</title>
+<style>
+body{font-family:Arial;padding:40px;color:#222}
+h1{color:#b89545;text-align:center}
+h2{border-bottom:2px solid #b89545;padding-bottom:10px}
+p{font-size:16px;margin:18px 0}
+.total{font-size:26px;font-weight:bold;color:#a17b28}
+.footer{text-align:center;margin-top:60px;color:#777}
+</style>
+</head>
+<body>
+<h1>BAR COTIZA</h1>
+<h2>COTIZACIÓN DE EVENTO</h2>
+<p><b>Cliente:</b> ${escapeHTML(client)}</p>
+<p><b>Evento:</b> ${escapeHTML(event)}</p>
+<p><b>Fecha:</b> ${escapeHTML(date)}</p>
+<p><b>Invitados:</b> ${escapeHTML(guests)}</p>
+<p><b>Paquete:</b> ${escapeHTML(pack)}</p>
+<hr>
+<p class="total">TOTAL: S/ ${total}</p>
+<div class="footer">
+Gracias por confiar en BAR COTIZA
+</div>
+<script>
+window.onload=function(){
+window.print();
+};
+<\/script>
+</body>
+</html>
+`);
+
+pdf.document.close();
+}
 function escapeHTML(value){
 return String(value).replace(/[&<>"']/g,c=>({
 '&':'&amp;','<':'&lt;','>':'&gt;',
