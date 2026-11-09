@@ -601,6 +601,37 @@ return String(value).replace(/[&<>"']/g,c=>({
 '"':'&quot;',"'":'&#39;'
 }[c]));
 }
+async function sendFeedback(){
+  if(!user) return;
+
+  const type = document.getElementById('feedbackType').value;
+  const messageText = document.getElementById('feedbackMessage').value.trim();
+  const status = document.getElementById('feedbackStatus');
+
+  if(!messageText){
+    status.innerHTML = '⚠️ Por favor, escribe tu comentario.';
+    return;
+  }
+
+  status.innerHTML = '⏳ Enviando comentario...';
+
+  const { error } = await db
+    .from('bar_cotiza_feedback')
+    .insert({
+      user_id: user.id,
+      type: type,
+      message: messageText
+    });
+
+  if(error){
+    console.error(error);
+    status.innerHTML = '❌ Ocurrió un error al enviar tu comentario.';
+    return;
+  }
+
+  document.getElementById('feedbackMessage').value = '';
+  status.innerHTML = '✅ ¡Gracias! Tu comentario fue enviado correctamente.';
+}
 function requestPremium(){
   const messageText = `👑 Hola, quiero obtener el Plan Premium de BAR COTIZA.`;
 
