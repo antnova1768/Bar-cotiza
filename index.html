@@ -112,6 +112,9 @@ nav button{flex:1;min-width:100px}
 <button onclick="showTab('historial')">Historial</button>
 <button onclick="showTab('negocio')">Mi negocio</button>
 <button id="ownerButton" class="hidden" onclick="showTab('owner')">Propietario</button>
+
+<span id="userEmail" style="font-size:13px; opacity:0.85;"></span>
+
 <button class="secondary" onclick="logout()">🔄 Cambiar cuenta</button>
 </nav>
 <div id="premiumBox" class="premium-box">
@@ -314,7 +317,7 @@ location.reload();
 async function initialize(){
 document.getElementById('login').classList.add('hidden');
 document.getElementById('app').classList.remove('hidden');
-
+document.getElementById('userEmail').textContent = '👤 ' + (user.email || '');
 const {data:profile}=await db.from('profiles')
 .select('*').eq('id',user.id).maybeSingle();
 const {data:subscription}=await db
