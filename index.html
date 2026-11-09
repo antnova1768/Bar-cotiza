@@ -574,10 +574,8 @@ return String(value).replace(/[&<>"']/g,c=>({
 function requestPremium(){
   const messageText = `👑 Hola, quiero obtener el Plan Premium de BAR COTIZA.`;
 
-  window.open(
-    'https://wa.me/51996163547?text=' + encodeURIComponent(messageText),
-    '_blank'
-  );
+  window.location.href =
+    'https://wa.me/51996163547?text=' + encodeURIComponent(messageText);
 }
 function showTab(id){
 ['cotizador','historial','negocio','owner'].forEach(x=>{
