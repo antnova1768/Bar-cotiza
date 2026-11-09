@@ -88,6 +88,7 @@ nav button{flex:1;min-width:100px}
 
 <button onclick="signIn()">INICIAR SESIÓN</button>
 <button class="secondary" onclick="signUp()">CREAR CUENTA</button>
+<button class="secondary" onclick="forgotPassword()">¿OLVIDASTE TU CONTRASEÑA?</button>
 <p id="status"></p>
 </div>
 
@@ -210,7 +211,14 @@ const SUPABASE_KEY =
 const db = window.supabase.createClient(
 SUPABASE_URL,SUPABASE_KEY
 );
-
+db.auth.onAuthStateChange((event, session) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    document.getElementById('login').classList.remove('hidden');
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('resetPasswordBox').style.display = 'block';
+    message('Crea tu nueva contraseña.');
+  }
+});
 let user=null;
 let business=null;
 let currentTotal=0;
@@ -243,7 +251,34 @@ if(error)return message(error.message);
 user=data.user;
 await initialize();
 }
+async function forgotPassword(){
+const email=document.getElementById('email').value.trim();
 
+if(!email)return message('Escribe tu correo electrónico primero.');
+
+const {error}=await db.auth.resetPasswordForEmail(email,{
+redirectTo:'https://antnova1768.github.io/Bar-cotiza/'
+});
+
+if(error)return message(error.message);
+
+message('Te enviamos un enlace para recuperar tu contraseña. Revisa tu correo.');
+}
+
+async function updatePassword(){
+const password=document.getElementById('newPassword').value;
+const confirm=document.getElementById('confirmPassword').value;
+
+if(password.length<6)return message('La contraseña debe tener al menos 6 caracteres.');
+if(password!==confirm)return message('Las contraseñas no coinciden.');
+
+const {error}=await db.auth.updateUser({password});
+
+if(error)return message(error.message);
+
+message('¡Contraseña actualizada correctamente!');
+document.getElementById('resetPasswordBox').style.display='none';
+}
 async function logout(){
 await db.auth.signOut();
 location.reload();
