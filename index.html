@@ -290,7 +290,15 @@ document.getElementById('app').classList.remove('hidden');
 
 const {data:profile}=await db.from('profiles')
 .select('*').eq('id',user.id).maybeSingle();
+const {data:subscription}=await db
+.from('bar_cotiza_subscriptions')
+.select('plan, expires_at')
+.eq('user_id', user.id)
+.maybeSingle();
 
+const userPlan = subscription?.plan || 'free';
+
+console.log('Plan del usuario:', userPlan);
 if(profile?.role==='owner'){
 document.getElementById('ownerButton').classList.remove('hidden');
 }
