@@ -112,7 +112,14 @@ nav button{flex:1;min-width:100px}
 <button id="ownerButton" class="hidden" onclick="showTab('owner')">Propietario</button>
 <button class="secondary" onclick="logout()">Salir</button>
 </nav>
+<div id="premiumBox" class="premium-box">
+  <h3>👑 Desbloquea BAR COTIZA Premium</h3>
+  <p>Crea cotizaciones ilimitadas y lleva tu negocio al siguiente nivel.</p>
 
+  <button onclick="requestPremium()">
+    QUIERO SER PREMIUM
+  </button>
+</div>
 <section id="cotizador" class="card">
 <h2>Nueva cotización</h2>
 
@@ -557,7 +564,20 @@ return String(value).replace(/[&<>"']/g,c=>({
 '"':'&quot;',"'":'&#39;'
 }[c]));
 }
+async function requestPremium(){
+  const phone = prompt('Ingresa tu número de WhatsApp para solicitar el Plan Premium:');
 
+  if(!phone) return;
+
+  const messageText = `Hola, quiero solicitar el Plan Premium de BAR COTIZA. Mi WhatsApp es: ${phone}`;
+
+  alert('¡Solicitud registrada! Nos comunicaremos contigo pronto.');
+
+  window.open(
+    'https://wa.me/?text=' + encodeURIComponent(messageText),
+    '_blank'
+  );
+}
 function showTab(id){
 ['cotizador','historial','negocio','owner'].forEach(x=>{
 document.getElementById(x).classList.add('hidden');
