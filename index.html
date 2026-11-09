@@ -116,6 +116,7 @@ nav button{flex:1;min-width:100px}
 <span id="userEmail" style="font-size:13px; opacity:0.85;"></span>
 
 <button class="secondary" onclick="logout()">🔄 Cambiar cuenta</button>
+<button onclick="showTab('feedback')">💬 Sugerencias</button>
 </nav>
 <div id="premiumBox" class="premium-box">
     <h3>👑 BAR COTIZA PREMIUM</h3>
@@ -200,7 +201,31 @@ ENVIAR POR WHATSAPP
 <input id="businessCity" placeholder="Ciudad">
 <button onclick="saveBusiness()">GUARDAR NEGOCIO</button>
 </section>
+<!-- SUGERENCIAS Y QUEJAS -->
+<section id="feedback" class="card hidden">
 
+  <h2>💬 Sugerencias y comentarios</h2>
+
+  <p>Tu opinión nos ayuda a mejorar BAR COTIZA.</p>
+
+  <select id="feedbackType">
+    <option value="Sugerencia">💡 Sugerencia</option>
+    <option value="Queja">⚠️ Queja o problema</option>
+    <option value="Felicitación">⭐ Felicitación</option>
+  </select>
+
+  <textarea
+    id="feedbackMessage"
+    placeholder="Cuéntanos qué podemos mejorar..."
+    rows="6"></textarea>
+
+  <button onclick="sendFeedback()">
+    📩 Enviar comentario
+  </button>
+
+  <p id="feedbackStatus"></p>
+
+</section>
 <section id="owner" class="card hidden">
 <h2>Panel del propietario</h2>
 <p class="small">Administración general de BAR COTIZA.</p>
