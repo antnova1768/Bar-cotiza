@@ -250,7 +250,14 @@ ENVIAR POR WHATSAPP
 
 <h2>Negocios</h2>
 <div id="businessList"></div>
+<div class="card">
+  <h2>💬 Comentarios de usuarios</h2>
+  <p class="small">Sugerencias, quejas y felicitaciones enviadas por los usuarios.</p>
 
+  <div id="feedbackList">
+    Cargando comentarios...
+  </div>
+</div>
 </section>
 
 </div>
@@ -541,7 +548,27 @@ u.data.map(x=>`<div class="item">${escapeHTML(x.email||'')}</div>`).join('');
 
 document.getElementById('businessList').innerHTML=
 b.data.map(x=>`<div class="item">${escapeHTML(x.name||'')} · ${escapeHTML(x.city||'')}</div>`).join('');
-}
+const { data: feedback, error: feedbackError } = await db
+  .from('bar_cotiza_feedback')
+  .select('*')
+  .order('created_at', { ascending: false });
+
+const feedbackList = document.getElementById('feedbackList');
+
+if (feedbackError) {
+  console.error(feedbackError);
+  feedbackList.innerHTML = '<p>No se pudieron cargar los comentarios.</p>';
+} else if (!feedback || feedback.length === 0) {
+  feedbackList.innerHTML = '<p>Aún no hay comentarios de usuarios.</p>';
+} else {
+  feedbackList.innerHTML = feedback.map(item => `
+    <div class="item">
+      <strong>${escapeHTML(item.type || 'Comentario')}</strong>
+      <p>${escapeHTML(item.message || '')}</p>
+      <small>${new Date(item.created_at).toLocaleString()}</small>
+    </div>
+  `).join('');
+}}
 function downloadQuotePDF(){
 
 const client=document.getElementById('client').value;
