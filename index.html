@@ -564,17 +564,11 @@ return String(value).replace(/[&<>"']/g,c=>({
 '"':'&quot;',"'":'&#39;'
 }[c]));
 }
-async function requestPremium(){
-  const phone = prompt('Ingresa tu número de WhatsApp para solicitar el Plan Premium:');
-
-  if(!phone) return;
-
-  const messageText = `Hola, quiero solicitar el Plan Premium de BAR COTIZA. Mi WhatsApp es: ${phone}`;
-
-  alert('¡Solicitud registrada! Nos comunicaremos contigo pronto.');
+function requestPremium(){
+  const messageText = `👑 Hola, quiero obtener el Plan Premium de BAR COTIZA.`;
 
   window.open(
-    'https://wa.me/?text=' + encodeURIComponent(messageText),
+    'https://wa.me/51996163547?text=' + encodeURIComponent(messageText),
     '_blank'
   );
 }
