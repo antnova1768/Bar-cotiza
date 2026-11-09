@@ -8,6 +8,17 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+  .plan-badge{
+  max-width:810px;
+  margin:15px auto;
+  padding:12px 18px;
+  text-align:center;
+  border:1px solid #b99446;
+  border-radius:10px;
+  background:#171717;
+  color:#d4af57;
+  font-weight:bold;
+}
 *{box-sizing:border-box}
 body{
 margin:0;
@@ -297,7 +308,13 @@ const {data:subscription}=await db
 .maybeSingle();
 
 const userPlan = subscription?.plan || 'free';
+const planBadge = document.getElementById('planBadge');
 
+if (userPlan === 'premium') {
+  planBadge.innerHTML = '💎 PLAN PREMIUM — Cotizaciones ilimitadas';
+} else {
+  planBadge.innerHTML = '🆓 PLAN GRATIS — 5 cotizaciones por mes';
+}
 console.log('Plan del usuario:', userPlan);
 if(profile?.role==='owner'){
 document.getElementById('ownerButton').classList.remove('hidden');
@@ -367,7 +384,35 @@ guests+' invitados × S/ '+price.toFixed(2)+
 
 async function saveQuote(){
 if(!user)return;
+// VERIFICAR LÍMITE DEL PLAN GRATIS
+const { data: subscription } = await db
+  .from('bar_cotiza_subscriptions')
+  .select('plan')
+  .eq('user_id', user.id)
+  .maybeSingle();
 
+const currentPlan = subscription?.plan || 'free';
+
+if (currentPlan === 'free') {
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString();
+
+  const { count, error: countError } = await db
+    .from('quotes')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+    .gte('created_at', firstDay)
+    .lt('created_at', nextMonth);
+
+  if (countError) {
+    console.error('Error al verificar el límite:', countError);
+  }
+
+  if ((count || 0) >= 5) {
+    return alert('🚀 Llegaste al límite de 5 cotizaciones mensuales del Plan Gratis. ¡Actualiza a Premium para crear cotizaciones ilimitadas!');
+  }
+}
 if(!business)return alert('Primero registra tu negocio.');
 
 calculate();
