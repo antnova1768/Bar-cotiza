@@ -133,6 +133,40 @@ nav button{flex:1;min-width:100px}
         💎 HACERME PREMIUM
     </button>
 </div>
+  <!-- PANTALLA PREMIUM -->
+<section id="premiumPayment" class="card hidden">
+
+  <h2>💎 Hazte Premium</h2>
+
+  <p class="small">
+    Obtén acceso ilimitado a todas las funciones de BAR COTIZA.
+  </p>
+
+  <div class="card">
+    <h2>💎 BAR COTIZA PREMIUM</h2>
+    <div class="total">S/ 14.90 <span class="small">/ mes</span></div>
+
+    <p>✓ Cotizaciones ilimitadas</p>
+    <p>✓ Historial completo</p>
+    <p>✓ Acceso a nuevas funciones</p>
+  </div>
+
+  <h3>📲 Realiza tu pago</h3>
+
+  <p class="small">
+    Puedes pagar mediante Yape o Plin. Después de realizar el pago,
+    envíanos tu comprobante para activar tu cuenta Premium.
+  </p>
+
+  <button onclick="sendPremiumRequest()">
+    📲 ENVIAR COMPROBANTE POR WHATSAPP
+  </button>
+
+  <button class="secondary" onclick="closePremium()">
+    ← VOLVER AL COTIZADOR
+  </button>
+
+</section>
 <section id="cotizador" class="card">
 <h2>Nueva cotización</h2>
 
@@ -443,7 +477,30 @@ guests+' invitados × S/ '+price.toFixed(2)+
 ' + extras S/ '+extras.toFixed(2)+
 ' - descuento S/ '+discount.toFixed(2);
 }
+function requestPremium(){
+  document.getElementById('cotizador').classList.add('hidden');
+  document.getElementById('historial').classList.add('hidden');
+  document.getElementById('negocio').classList.add('hidden');
+  document.getElementById('feedback').classList.add('hidden');
 
+  document.getElementById('premiumPayment').classList.remove('hidden');
+}
+
+function closePremium(){
+  document.getElementById('premiumPayment').classList.add('hidden');
+  document.getElementById('cotizador').classList.remove('hidden');
+}
+
+function sendPremiumRequest(){
+  const message = encodeURIComponent(
+    'Hola 👋 Quiero hacerme Premium en BAR COTIZA. Ya realicé el pago y deseo enviar mi comprobante.'
+  );
+
+  window.open(
+    'https://wa.me/51996163547?text=' + message,
+    '_blank'
+  );
+}
 async function saveQuote(){
 if(!user)return;
 // VERIFICAR LÍMITE DEL PLAN GRATIS
