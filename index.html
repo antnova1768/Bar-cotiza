@@ -766,6 +766,30 @@ db.auth.getSession().then(({ data }) => {
     }, 500);
   }
 });
+function requestPremium(){
+  document.getElementById('premiumPayment').classList.remove('hidden');
+  document.getElementById('cotizador').classList.add('hidden');
+}
+
+function closePremium(){
+  document.getElementById('premiumPayment').classList.add('hidden');
+  document.getElementById('cotizador').classList.remove('hidden');
+}
+
+function sendPremiumRequest(){
+  const email = user?.email || '';
+
+  const text = `Hola, quiero activar BAR COTIZA PREMIUM 💎
+
+Mi correo registrado es: ${email}
+
+Ya realicé el pago de S/ 14.90 y quiero enviar mi comprobante para activar mi cuenta Premium.`;
+
+  const phone = '51996163547';
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+
+  window.open(url, '_blank');
+}  
 </script>
 </body>
 </html>
