@@ -695,7 +695,6 @@ db.auth.getSession().then(({ data }) => {
   if (data.session) {
     user = data.session.user;
 
-    // Esperamos un momento para dar prioridad al modo recuperación
     setTimeout(() => {
       if (!isPasswordRecovery) {
         initialize();
@@ -703,5 +702,6 @@ db.auth.getSession().then(({ data }) => {
     }, 500);
   }
 });
+</script>
 </body>
 </html>
