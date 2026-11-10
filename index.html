@@ -671,7 +671,17 @@ document.getElementById(x).classList.add('hidden');
 });
 document.getElementById(id).classList.remove('hidden');
 }
+db.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    user = session.user;
 
+    document.getElementById('login').classList.remove('hidden');
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('resetPasswordBox').style.display = 'block';
+
+    message('🔐 Crea tu nueva contraseña.');
+  }
+});
 db.auth.getSession().then(({data})=>{
   if(data.session){
     user=data.session.user;
