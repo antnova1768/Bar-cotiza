@@ -273,14 +273,7 @@ const SUPABASE_KEY =
 const db = window.supabase.createClient(
 SUPABASE_URL,SUPABASE_KEY
 );
-db.auth.onAuthStateChange((event, session) => {
-  if (event === 'PASSWORD_RECOVERY') {
-    document.getElementById('login').classList.remove('hidden');
-    document.getElementById('app').classList.add('hidden');
-    document.getElementById('resetPasswordBox').style.display = 'block';
-    message('Crea tu nueva contraseña.');
-  }
-});
+
 let user=null;
 let business=null;
 let currentTotal=0;
@@ -671,8 +664,12 @@ document.getElementById(x).classList.add('hidden');
 });
 document.getElementById(id).classList.remove('hidden');
 }
-db.auth.onAuthStateChange(async (event, session) => {
+
+let isPasswordRecovery = false;
+
+db.auth.onAuthStateChange((event, session) => {
   if (event === 'PASSWORD_RECOVERY') {
+    isPasswordRecovery = true;
     user = session.user;
 
     document.getElementById('login').classList.remove('hidden');
@@ -682,24 +679,18 @@ db.auth.onAuthStateChange(async (event, session) => {
     message('🔐 Crea tu nueva contraseña.');
   }
 });
-db.auth.getSession().then(({data})=>{
-  if(data.session){
-    user=data.session.user;
 
-    // Si estamos en recuperación de contraseña,
-    // no abrir la aplicación automáticamente
-    if (window.location.hash.includes('type=recovery')) {
-      document.getElementById('login').classList.remove('hidden');
-      document.getElementById('app').classList.add('hidden');
-      document.getElementById('resetPasswordBox').style.display = 'block';
-      message('🔐 Crea tu nueva contraseña.');
-      return;
-    }
+db.auth.getSession().then(({ data }) => {
+  if (data.session) {
+    user = data.session.user;
 
-    initialize();
+    // Esperamos un momento para dar prioridad al modo recuperación
+    setTimeout(() => {
+      if (!isPasswordRecovery) {
+        initialize();
+      }
+    }, 500);
   }
 });
-</script>
-
 </body>
 </html>
