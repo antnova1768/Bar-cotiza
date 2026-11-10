@@ -307,19 +307,30 @@ user=data.user;
 await initialize();
 }
 async function forgotPassword(){
-const email=document.getElementById('email').value.trim();
+  const email = document.getElementById('email').value.trim();
 
-if(!email)return message('Escribe tu correo electrónico primero.');
+  if(!email){
+    message('⚠️ Escribe tu correo electrónico primero.');
+    return;
+  }
 
-const {error}=await db.auth.resetPasswordForEmail(email,{
-redirectTo:'https://antnova1768.github.io/Bar-cotiza/'
-});
+  message('⏳ Enviando enlace...');
 
-if(error)return message(error.message);
+  try {
+    const { error } = await db.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://antnova1768.github.io/Bar-cotiza/'
+    });
 
-message('Te enviamos un enlace para recuperar tu contraseña. Revisa tu correo.');
+    if(error){
+      message('❌ Error: ' + error.message);
+      return;
+    }
+
+    message('✅ Te enviamos un enlace para recuperar tu contraseña. Revisa tu correo.');
+  } catch(err) {
+    message('❌ Error inesperado: ' + err.message);
+  }
 }
-
 async function updatePassword(){
 const password=document.getElementById('newPassword').value;
 const confirm=document.getElementById('confirmPassword').value;
