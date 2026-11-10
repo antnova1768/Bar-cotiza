@@ -365,14 +365,21 @@ const {data:subscription}=await db
 const userPlan = subscription?.plan || 'free';
 const planBadge = document.getElementById('planBadge');
 
-if (userPlan === 'premium') {
-  planBadge.innerHTML = '💎 PLAN PREMIUM — Cotizaciones ilimitadas';
-} else {
-  planBadge.innerHTML = '🆓 PLAN GRATIS — 5 cotizaciones por mes';
+if (planBadge) {
+  if (userPlan === 'premium') {
+    planBadge.innerHTML = '💎 PLAN PREMIUM — Cotizaciones ilimitadas';
+  } else {
+    planBadge.innerHTML = '🆓 PLAN GRATIS — 5 cotizaciones por mes';
+  }
 }
+
 console.log('Plan del usuario:', userPlan);
+  
 if(profile?.role==='owner'){
-document.getElementById('ownerButton').classList.remove('hidden');
+  const ownerButton = document.getElementById('ownerButton');
+  if(ownerButton){
+    ownerButton.classList.remove('hidden');
+  }
 }
 
 await loadBusiness();
