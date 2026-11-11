@@ -406,7 +406,15 @@ if (planBadge) {
     planBadge.innerHTML = '🆓 PLAN GRATIS — 5 cotizaciones por mes';
   }
 }
+const premiumBox = document.getElementById('premiumBox');
 
+if (premiumBox) {
+  if (userPlan === 'premium') {
+    premiumBox.style.display = 'none';
+  } else {
+    premiumBox.style.display = 'block';
+  }
+}
 console.log('Plan del usuario:', userPlan);
   
 if(profile?.role==='owner'){
