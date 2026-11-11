@@ -111,6 +111,7 @@ nav button{flex:1;min-width:100px}
 <button onclick="showTab('cotizador')">Cotizador</button>
 <button onclick="showTab('historial')">Historial</button>
 <button onclick="showTab('negocio')">Mi negocio</button>
+<button onclick="showTab('recipes')">🍸 Recetario</button>
 <button id="ownerButton" class="hidden" onclick="showTab('owner')">Propietario</button>
 
 <span id="userEmail" style="font-size:13px; opacity:0.85;"></span>
@@ -165,6 +166,46 @@ nav button{flex:1;min-width:100px}
   <button class="secondary" onclick="closePremium()">
     ← VOLVER AL COTIZADOR
   </button>
+
+</section>
+<!-- RECETARIO -->
+<section id="recipes" class="card hidden">
+
+  <h2>🍸 Recetario y Costeo</h2>
+
+  <p class="small">
+    Crea y calcula el costo de tus cócteles para conocer su precio de venta y ganancia.
+  </p>
+
+  <div id="recipesPremiumMessage">
+    <h3>💎 Función Premium</h3>
+    <p class="small">
+      El Recetario y Costeo de Cócteles está disponible para usuarios Premium.
+    </p>
+  </div>
+
+  <div id="recipeContent" class="hidden">
+
+    <h3>Nueva receta</h3>
+
+    <input id="recipeName" placeholder="Nombre del cóctel">
+
+    <input id="recipeIngredients" placeholder="Ingredientes (ej: Pisco, limón, jarabe)">
+
+    <input id="recipeCost" type="number" placeholder="Costo total de preparación (S/)">
+
+    <input id="recipePrice" type="number" placeholder="Precio de venta (S/)">
+
+    <button onclick="calculateRecipe()">
+      🧮 CALCULAR GANANCIA
+    </button>
+
+    <div id="recipeResult" class="card hidden">
+      <h3>📊 Resultado</h3>
+      <p id="recipeProfit"></p>
+    </div>
+
+  </div>
 
 </section>
 <section id="cotizador" class="card">
@@ -406,6 +447,27 @@ if (planBadge) {
     planBadge.innerHTML = '🆓 PLAN GRATIS — 5 cotizaciones por mes';
   }
 }
+// CONTROL DE ACCESO AL RECETARIO PREMIUM
+const recipesPremiumMessage = document.getElementById('recipesPremiumMessage');
+const recipeContent = document.getElementById('recipeContent');
+
+if (userPlan === 'premium') {
+  if (recipesPremiumMessage) {
+    recipesPremiumMessage.classList.add('hidden');
+  }
+
+  if (recipeContent) {
+    recipeContent.classList.remove('hidden');
+  }
+} else {
+  if (recipesPremiumMessage) {
+    recipesPremiumMessage.classList.remove('hidden');
+  }
+
+  if (recipeContent) {
+    recipeContent.classList.add('hidden');
+  }
+}
 const premiumBox = document.getElementById('premiumBox');
 
 if (premiumBox) {
@@ -484,6 +546,27 @@ document.getElementById('summary').textContent=
 guests+' invitados × S/ '+price.toFixed(2)+
 ' + extras S/ '+extras.toFixed(2)+
 ' - descuento S/ '+discount.toFixed(2);
+}
+function calculateRecipe() {
+  const cost = Number(document.getElementById('recipeCost').value) || 0;
+  const price = Number(document.getElementById('recipePrice').value) || 0;
+
+  if (cost <= 0 || price <= 0) {
+    return alert('Ingresa el costo y el precio de venta del cóctel.');
+  }
+
+  if (price < cost) {
+    return alert('El precio de venta no puede ser menor que el costo.');
+  }
+
+  const profit = price - cost;
+  const margin = ((profit / price) * 100).toFixed(1);
+
+  document.getElementById('recipeProfit').innerHTML =
+    `💰 Ganancia por cóctel: <strong>S/ ${profit.toFixed(2)}</strong><br>
+     📊 Margen de ganancia: <strong>${margin}%</strong>`;
+
+  document.getElementById('recipeResult').classList.remove('hidden');
 }
 function requestPremium(){
   document.getElementById('cotizador').classList.add('hidden');
